@@ -1,0 +1,138 @@
+{%extends 'layout.html'%}
+
+{%block content%}
+<div class="showContent">
+            <h3 style="text-align: center">{{content.title}}</h3>
+            <p style="font-size: 15px">
+                作者：<span>{{content.user.username}}</span>-
+                时间：<span>{{content.addTime|date('Y年m月d日')}}</span>-
+                阅读量：<span>{{content.views}} </span>-
+                评论：<span>{{content.comments.length}}</span>
+            </p>
+       <!--   <input type="hidden" id="data" value="{{content.content}}"/>-->
+    <text>{{content.content}}</text>
+            <p id="content"></p>
+</div>
+<!--评论-->
+<div class="showContent showView">
+    {%if userInfo._id%}
+    <div class="row" style="margin-top: 10px">
+        <div class="col-xs-6">评论</div>
+        <div class="col-xs-6" style="text-align: right">共有 <span class="messageCount" id="commentCount">3</span> 条评论</div>
+    </div>
+    <br/>
+    <div>{{userInfo.username}}</div>
+    <textarea rows="3" class="form-control" placeholder="请输入评论" id="messageContent"></textarea><br/>
+
+    <input type="hidden" id="contentId" value="{{content.id}}"/>
+
+    <p><button class="btn btn-primary btn-sm" style=" margin-top: -19px;" role="button" id="messageBtn">提交</button></p>
+
+    <div class="panel panel-default messageList">
+        <div style="text-align: center">
+        </div>
+    </div>
+
+    <nav>
+        <ul class="pager">
+            <li class="previous"><a href="javascript:;">上一页<span aria-hidden="true">&rarr;</span></a></li>
+            <li class="pageList"></li>
+            <li class="next"><a href="javascript:;">下一页<span aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+    </nav>
+    {%else%}
+    <div class="alert alert-warning" role="alert" style="text-align: center">你还没有登录请先登陆</div>
+    {%endif%}
+</div>
+<script src="/public/js/jquery-1.11.3.js"></script>
+<script >
+    $(function () {
+        var  prepage=2;//每页条数
+        var page=1;
+        var pages=0;
+        var  comments=[];
+        $('#messageBtn').on('click',function () {
+            $.ajax({
+                type:'Post',
+                url:'/api/comment/post',
+                data:{
+                    contentId:$('#contentId').val(),
+                    content:$('#messageContent').val()
+                },
+                success:function (responseData) {
+                    $('#messageContent').val('');
+                    comments=responseData.data.comments.reverse();
+                    readResponseData();
+                },
+            })
+        });
+/*
+* 每次页面重载的时候获取一下该文章的所用评论
+* */
+        $.ajax({
+            type:'get',
+            url:'/api/comment',
+            data:{
+                contentId:$('#contentId').val(),
+            },
+            success:function (responseData) {
+                comments=responseData.data.reverse();
+                readResponseData();
+            },
+        });
+
+        /*上一页，下一页事件委托*/
+        $('.pager').delegate('a','click',function () {
+            if($(this).parent().hasClass('previous')){
+                    page--;
+            }
+            else {
+                page++;
+            }
+            readResponseData();
+        });
+
+        function  readResponseData() {
+            $('#commentCount').html(comments.length);
+
+            pages=Math.max(Math.ceil(comments.length/prepage),1);
+          //计算条数范围
+            //page=1 start=0  end=2;    从第0条到第二条
+          var start=Math.max(0,(page-1)*prepage);//开始为跳过之前条数的
+
+          var end=Math.min(start+prepage,comments.length);
+
+            var $lis=$('.pager li');
+            $lis.eq(1).html(page+'/'+pages);
+    if(page<=1){
+        page=1;
+        $lis.eq(0).html('<span>没有上一页了</span>')
+    }else {
+        $lis.eq(0).html('<a href="javascript:;">上一页</a>')
+    }
+    if(page>=pages){
+        page=pages;
+        $lis.eq(2).html('<span>没有下一页了</span>')
+    }else {
+        $lis.eq(2).html('<a href="javascript:;">下一页</a>')
+    }
+
+    if(comments.length==0){
+        $('.messageList').html('<div style="text-align: center"><p>还没有评论</p></div>');
+    }else{
+        var html='';
+        /*只循环当前页面的条数*/
+        for(var i=start;i<end;i++){
+            html+='<p><span> '+comments[i].username+'</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>'+fomatDate(comments[i].postTime)+' </span>&nbsp;&nbsp;&nbsp;&nbsp;<p>'+comments[i].content+'</p>';
+        }
+        $('.messageList').html(html);
+    }
+        }
+    });
+
+    function fomatDate(date) {
+        var date1=new Date(date);//将字符串变为日期对象
+        return date1.getFullYear()+'年'+ (date1.getMonth()+1)+'月'+date1.getDay()+'日'+date1.getHours()+'时'+date1.getMinutes()+'分钟'+date1.getSeconds()+'秒';
+    }
+</script>
+{%endblock%}

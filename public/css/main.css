@@ -1,0 +1,71 @@
+
+a:hover{
+    text-decoration: none;
+}
+.topCenter{
+    width: 100%;
+    height: 150px;
+    background: url("../images/shanshui.jpg") no-repeat;
+    background-size: 100% 100%;
+}
+.styCenter{
+    float: right;
+    margin-right:  150px;
+    margin-top: 40px;
+   background: white;
+}
+.colWarning{
+    color: red;
+}
+.userInfo{
+    float: right;
+    margin-right: 20px;
+    margin-top: 20px;
+    background: white;
+    border:1px solid whitesmoke;
+    border-radius: 10px;
+}
+.userMess{
+    float: right;
+    margin-right: 37px;
+    margin-top: 3px;
+    font-size: 18px;
+    margin-left: 40px;
+      color: red;
+   text-align:center;
+    font-weight: 500;
+}
+.btn{
+    margin-right: 60px;
+    float: right;
+}
+.colMint{
+float: right;
+    margin-right: 10px;
+}
+.showContent,.showView,.showPage{
+position: relative;
+    float: left;
+    margin-top: 38px;
+    margin-left: 250px;
+    width:600px;
+    height: 150px;
+    background: white;
+    border:3px solid whitesmoke;
+    border-radius: 10px;
+}
+.readStyle{
+    float: left;
+    margin-left: 10px;
+    margin-top:-6px;
+}
+.showPage{
+    margin-top: 19px;
+    height: 70px;
+
+}
+
+.showView{
+
+    height: 220px;
+}

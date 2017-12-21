@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>博客</title>
+    <link rel="stylesheet" href="/public/css/main.css"/>
+    <link rel="stylesheet" href="/public/css/bootstrap.css"/>
+</head>
+<body style="background: #F0FFFF" >
+<div class="topCenter">
+    <center><h1>博客</h1></center>
+</div>
+
+<!--分类选项卡-->
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+    <ul class="nav nav-tabs">
+        {%if category==''%}
+        <li class="active"><a href="/" data-toggle="tab" >首页</a></li>
+        {%else%}
+        <li ><a href="/" data-toggle="tab">首页</a></li>
+        {%endif%}
+
+
+        {%for cate in categories%}
+        {%if category==cate.id%}
+        <li class="active"><a href="/?category={{cate.id}}" data-toggle="tab" >{{cate.name}}</a></li>
+        {%else%}
+        <li><a href="/?category={{cate.id}}" data-toggle="tab">{{cate.name}}</a></li>
+        {%endif%}
+        {%endfor%}
+    </ul>
+</div>
+{% if userInfo._id %}
+<section id="userInfo" class="userInfo">
+    <p class="userMess">用户信息</p>
+
+    <p><span id="userName"style="color: red;font-size: 15px">{{userInfo.username}}</span></p>
+
+    {%if userInfo.isAdmin%}
+    <div>
+        <span>你好,管理员！</span>
+        <a href="/admin">进入管理</a>
+    </div>
+    {%else%}
+    <div style="color: red">你好!欢迎来到我的博客！</div>
+    {%endif%}
+    <div><a href="javascript:;" id="logout">退出</a></div>
+</section>
+
+{% else %}
+
+<section class="styCenter" id="loginBox">
+    <h3><center>登陆</center></h3>
+    <p  class="colWarning"></p>
+    <span>用户：</span><input type="text" name="username"/><br/><br/>
+    <span>密码：</span><input type="password" name="password"/><br/><br/>
+    <input type="button" class="btn btn-info" value="登陆"/>
+    <p></p>
+    <!--<input type="button" value="去注册" class="colMint"/>-->
+    <a href="javascript:;" class="colMint"><p style="color: red">没有账号吗？去注册</p></a>
+</section>
+<section class="styCenter" id="registerBox"style="display: none">
+    <h3><center>注册</center></h3>
+    <p class="colWarning"></p>
+    <span>用户：</span><input type="text" name="username"/><br/><br/>
+    <span>密码：</span><input type="password" name="password"/><br/><br/>
+    <span>确认：</span><input type="password" name="repassword"/><br/><br/>
+    <input type="button" class="btn btn-info" value="注册"/>
+    <p></p>
+    <!--<input type="button" value="去登陆"class="colMint"/>-->
+    <a href="javascript:;" class="colMint">去登陆</a>
+</section>
+
+{% endif %}
+
+<!--内容展示-->
+{%block content%}{%endblock%}
+<script src="/public/js/jquery-1.11.3.js"></script>
+<script src="/public/js/index.js"></script>
+</body>
+</html>
